@@ -1,24 +1,37 @@
 package com.hasan.numberWriter;
 
+/*
+ * To be able to write bigger numbers, go to line 69
+ */
+
 public class NumberWriter {	
-	public static String writeNumber(long input) {
+	public static String writeNumber(String input) {
+		input = input.replace(" ", "");
 		String output = "";
+		int d3dig = 0;
+		int categorie = 0;
+		boolean isNegative = false;
 		
-		if(input == 0) {
-			System.out.println("Zero");
+		if(Character.compare(input.charAt(0), '-') == 0) {
+			isNegative = true;
+			input = input.substring(1);
 		}
-		else {
-			int categorie = 0;
-			while(input > 0) {
-				long d3dig = input % 1000;
-				if(d3dig != 0) {
-					output = writeHundreds(d3dig, output) + " " + Numbers.categories[categorie] + output;
-				}
-				categorie++;
-				input /= 1000;
+		while(input.length() > 0) {
+			int startPos = Math.max(0, input.length() - 3);
+			d3dig = Integer.valueOf(input.substring(startPos));
+			input = input.substring(0, startPos);
+			if(d3dig != 0) {
+				output = writeHundreds(d3dig, output) + " " + Numbers.categories[categorie] + output;
 			}
+			categorie++;
 		}
-		return output;
+		if(output == "") {
+			output = "Zero";
+		}
+		if(isNegative) {
+			output = "Minus " + output;
+		}
+		return output.trim();
 	}
 	
 	private static String writeTens(long input, String output) {
@@ -53,4 +66,5 @@ class Numbers {
 	public static final String numbersTo20[] = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
 	public static final String tens[] = {"Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
 	public static final String categories[] = {"", "Thousand ", "Million ", "Billion ", "Trillion ", "Quadrillion ", "Quintillion ", "Sextillion ", "Septillion ", "Octillion ", "Nonillion ", "Decillion "};
+	//To add bigger numbers, just add the label of the number at the end of the categories array(example: thousand, million, etc...)
 }
